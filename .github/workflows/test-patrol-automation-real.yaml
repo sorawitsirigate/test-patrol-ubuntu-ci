@@ -28,22 +28,22 @@ jobs:
           echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
           $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-36" "build-tools;36.1.0" "platform-tools"
 
-      - name: Install FVM
-        run: |
-          curl -fsSL https://fvm.app/install.sh | bash
-          echo "$HOME/fvm/bin" >> $GITHUB_PATH
+      # - name: Install FVM
+      #   run: |
+      #     curl -fsSL https://fvm.app/install.sh | bash
+      #     echo "$HOME/fvm/bin" >> $GITHUB_PATH
 
-      - name: Setup Flutter via FVM
-        run: |
-          fvm install
-          fvm flutter config --android-sdk $ANDROID_HOME
-          echo "y" | fvm flutter doctor --android-licenses
+      # - name: Setup Flutter via FVM
+      #   run: |
+      #     fvm install
+      #     fvm flutter config --android-sdk $ANDROID_HOME
+      #     echo "y" | fvm flutter doctor --android-licenses
 
-      - name: Install Patrol CLI
-        run: |
-          fvm flutter pub global activate patrol_cli
-          # แอดเข้า $GITHUB_PATH เพื่อให้เรียกคำสั่ง patrol ตรงๆ ได้ใน step ถัดไป
-          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+      # - name: Install Patrol CLI
+      #   run: |
+      #     fvm flutter pub global activate patrol_cli
+      #     # แอดเข้า $GITHUB_PATH เพื่อให้เรียกคำสั่ง patrol ตรงๆ ได้ใน step ถัดไป
+      #     echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
       - name: Check Patrol Doctor and Flutter Doctor
         run: |
