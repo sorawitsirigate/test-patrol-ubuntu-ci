@@ -1,0 +1,54 @@
+name: Patrol Setup on Ubuntu Latest
+
+on:
+  workflow_dispatch:
+
+jobs:
+  patrol-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # - name: Checkout Code
+      #   uses: actions/checkout@v4
+
+      # - name: Setup SSH Keys
+      #   uses: webfactory/ssh-agent@v0.9.0
+      #   with:
+      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # - name: Set up Java 17
+      #   uses: actions/setup-java@v4
+      #   with:
+      #     distribution: "temurin"
+      #     java-version: "17"
+
+      - name: Setup Android SDK
+        run: |
+          echo "🤖 Accepting Licenses and Installing Android SDK Components..."
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-36" "build-tools;36.1.0" "platform-tools"
+
+      - name: Install FVM
+        run: |
+          curl -fsSL https://fvm.app/install.sh | bash
+          echo "$HOME/fvm/bin" >> $GITHUB_PATH
+
+      - name: Setup Flutter via FVM
+        run: |
+          fvm install
+          fvm flutter config --android-sdk $ANDROID_HOME
+          echo "y" | fvm flutter doctor --android-licenses
+
+      - name: Install Patrol CLI
+        run: |
+          fvm flutter pub global activate patrol_cli
+          # แอดเข้า $GITHUB_PATH เพื่อให้เรียกคำสั่ง patrol ตรงๆ ได้ใน step ถัดไป
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+      - name: Check Patrol Doctor and Flutter Doctor
+        run: |
+          echo "🚀 Final Check with Patrol Doctor..."
+          patrol doctor
+
+          echo "🚀 Final Check with Flutter Doctor..."
+          fvm flutter doctor -v
