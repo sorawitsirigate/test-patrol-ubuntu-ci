@@ -48,6 +48,9 @@ jobs:
           echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
           $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-36" "build-tools;36.1.0" "platform-tools"
 
+      - name: Add Android platform-tools to PATH
+        run: echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+
       # 8. ตรวจสอบความพร้อมของระบบ
       - name: Check Patrol Doctor and Flutter Doctor
         run: |
