@@ -51,7 +51,14 @@ jobs:
       - name: Add Android platform-tools to PATH
         run: echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
 
-      # 8. ตรวจสอบความพร้อมของระบบ
+      - name: Configure Flutter and Accept Licenses
+        run: |
+          echo "🤖 Disabling Linux Desktop to speed up CI and clear Doctor warnings..."
+          fvm flutter config --no-enable-linux-desktop
+
+          echo "🤖 Accepting Flutter Android Licenses..."
+          yes | fvm flutter doctor --android-licenses
+
       - name: Check Patrol Doctor and Flutter Doctor
         run: |
           echo "🚀 Final Check with Patrol Doctor..."
