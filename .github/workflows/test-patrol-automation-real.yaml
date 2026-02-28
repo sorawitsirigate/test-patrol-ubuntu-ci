@@ -8,57 +8,58 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # # 1. ดึง Source Code ของโปรเจกต์คุณ
+      # ดึง Source Code ของโปรเจกต์
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. ติดตั้ง Java (จำเป็นสำหรับ Android SDK และ Gradle)
+      # ติดตั้ง Java (จำเป็นสำหรับ Android SDK และ Gradle)
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: "zulu"
-          java-version: "17" # แนะนำเวอร์ชัน 17 สำหรับ Android Build ปัจจุบัน
+          java-version: "17"
 
-      # 3. ติดตั้ง Flutter และ Dart พื้นฐานเข้าไปใน Runner
+      # ติดตั้ง Flutter และ Dart พื้นฐานเข้าไปใน Runner
       - name: Setup Flutter and Dart
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
           cache: true
 
-      # 4. ติดตั้ง FVM (เนื่องจากคุณใช้ fvm flutter doctor ใน script)
+      # ติดตั้ง FVM 
       - name: Install FVM
         run: dart pub global activate fvm
 
-      # 5. ติดตั้ง Flutter SDK ตามเวอร์ชันในไฟล์ .fvm/fvm_config.json
+      # ติดตั้ง Flutter SDK ตามเวอร์ชันในไฟล์ .fvm/fvm_config.json
       - name: Install Flutter SDK via FVM
         run: fvm install
 
-      # 6. ติดตั้ง Patrol CLI และตั้งค่า PATH
+      # ติดตั้ง Patrol CLI และตั้งค่า PATH
       - name: Setup Patrol CLI
         run: |
           dart pub global activate patrol_cli
-          # เพิ่ม PATH เพื่อให้สามารถเรียกใช้คำสั่ง 'patrol' ได้โดยตรง
           echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
-      # 7. ตั้งค่า Android SDK ตาม Script เดิมของคุณ
+      # ตั้งค่า Android SDK
       - name: Setup Android SDK
         run: |
           echo "🤖 Accepting Licenses and Installing Android SDK Components..."
           echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
           $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-36" "build-tools;36.1.0" "platform-tools"
 
+      # ตั้งค่า Android platform-tools
       - name: Add Android platform-tools to PATH
         run: echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
 
+      # ยอมรับ Flutter Android Licenses
       - name: Configure Flutter and Accept Licenses
         run: |
           echo "🤖 Disabling Linux Desktop to speed up CI and clear Doctor warnings..."
           fvm flutter config --no-enable-linux-desktop
-
           echo "🤖 Accepting Flutter Android Licenses..."
           yes | fvm flutter doctor --android-licenses
 
+      # ตรวจสอบ Dependency ของ Flutter และ Patrol
       - name: Check Patrol Doctor and Flutter Doctor
         run: |
           echo "🚀 Final Check with Patrol Doctor..."
