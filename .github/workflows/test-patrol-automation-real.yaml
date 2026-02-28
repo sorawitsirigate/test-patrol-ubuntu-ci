@@ -9,8 +9,8 @@ jobs:
 
     steps:
       # # 1. ดึง Source Code ของโปรเจกต์คุณ
-      # - name: Checkout Code
-      #   uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       # 2. ติดตั้ง Java (จำเป็นสำหรับ Android SDK และ Gradle)
       - name: Setup Java
